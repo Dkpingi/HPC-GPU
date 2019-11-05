@@ -5,7 +5,7 @@ NVCC=$(CUDA_ROOT)/bin/nvcc
 NVCC_FLAGS=-O2 -arch=sm_20 --compiler-options "-O2 -Wall -Wextra"
 
 .PHONY: build
-build: ./bin/nullKernelsync ./bin/BreakEven
+build: ./bin/nullKernelsync ./bin/BreakEven ./bin/MemorySpeed
 
 .PHONY: clean
 clean:
@@ -18,4 +18,7 @@ rebuild: clean build
 	$(NVCC) $(NVCC_FLAGS) -o $@ $^ $(INC) $(LIB)
 
 ./bin/BreakEven: ./src/BreakEven.cu
+	$(NVCC) $(NVCC_FLAGS) -o $@ $^ $(INC) $(LIB)
+
+./bin/MemorySpeed: ./src/MemorySpeed.cu
 	$(NVCC) $(NVCC_FLAGS) -o $@ $^ $(INC) $(LIB)
