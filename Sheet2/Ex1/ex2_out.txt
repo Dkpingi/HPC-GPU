@@ -1,0 +1,88 @@
+4000
+Measuring memory transfer... 
+ Size: 16000 
+1439360 KB free of total 1509888 KB
+12.12 us
+19.53 us
+20.47 us
+20.03 us
+12000
+Measuring memory transfer... 
+ Size: 48000 
+1439360 KB free of total 1509888 KB
+24.46 us
+31.81 us
+24.96 us
+23.23 us
+36000
+Measuring memory transfer... 
+ Size: 144000 
+1439360 KB free of total 1509888 KB
+50.62 us
+84.00 us
+38.90 us
+36.97 us
+108000
+Measuring memory transfer... 
+ Size: 432000 
+1439360 KB free of total 1509888 KB
+131.56 us
+188.61 us
+86.45 us
+80.78 us
+324000
+Measuring memory transfer... 
+ Size: 1296000 
+1439104 KB free of total 1509888 KB
+351.87 us
+385.11 us
+223.52 us
+206.88 us
+972000
+Measuring memory transfer... 
+ Size: 3888000 
+1436544 KB free of total 1509888 KB
+974.95 us
+744.63 us
+647.81 us
+594.66 us
+2916000
+Measuring memory transfer... 
+ Size: 11664000 
+1428992 KB free of total 1509888 KB
+2843.52 us
+1911.00 us
+1914.08 us
+1760.55 us
+8748000
+Measuring memory transfer... 
+ Size: 34992000 
+1406208 KB free of total 1509888 KB
+8365.79 us
+5445.83 us
+5726.30 us
+5270.17 us
+26244000
+Measuring memory transfer... 
+ Size: 104976000 
+1337856 KB free of total 1509888 KB
+25184.49 us
+16054.08 us
+17180.31 us
+15771.33 us
+78732000
+Measuring memory transfer... 
+ Size: 314928000 
+1132800 KB free of total 1509888 KB
+75153.65 us
+47854.16 us
+51478.72 us
+47273.42 us
+236196000
+Measuring memory transfer... 
+ Size: 944784000 
+517632 KB free of total 1509888 KB
+224728.98 us
+143318.11 us
+154329.52 us
+143897.04 us

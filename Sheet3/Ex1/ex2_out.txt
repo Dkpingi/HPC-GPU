@@ -1,0 +1,63 @@
+1
+Measuring memory transfer... Message Size: 1 Byte
+Bandwidth: 3.3894e+06 Byte/s
+2
+Measuring memory transfer... Message Size: 2 Byte
+Bandwidth: 6.7841e+06 Byte/s
+4
+Measuring memory transfer... Message Size: 4 Byte
+Bandwidth: 1.3372e+07 Byte/s
+8
+Measuring memory transfer... Message Size: 8 Byte
+Bandwidth: 2.6795e+07 Byte/s
+16
+Measuring memory transfer... Message Size: 16 Byte
+Bandwidth: 5.3234e+07 Byte/s
+32
+Measuring memory transfer... Message Size: 32 Byte
+Bandwidth: 1.0836e+08 Byte/s
+64
+Measuring memory transfer... Message Size: 64 Byte
+Bandwidth: 2.1731e+08 Byte/s
+128
+Measuring memory transfer... Message Size: 128 Byte
+Bandwidth: 4.3386e+08 Byte/s
+256
+Measuring memory transfer... Message Size: 256 Byte
+Bandwidth: 8.6519e+08 Byte/s
+512
+Measuring memory transfer... Message Size: 512 Byte
+Bandwidth: 1.7303e+09 Byte/s
+1024
+Measuring memory transfer... Message Size: 1024 Byte
+Bandwidth: 3.4438e+09 Byte/s
+2048
+Measuring memory transfer... Message Size: 2048 Byte
+Bandwidth: 6.9531e+09 Byte/s
+4096
+Measuring memory transfer... Message Size: 4096 Byte
+Bandwidth: 1.3951e+10 Byte/s
+8192
+Measuring memory transfer... Message Size: 8192 Byte
+Bandwidth: 2.7666e+10 Byte/s
+16384
+Measuring memory transfer... Message Size: 16384 Byte
+Bandwidth: 5.4913e+10 Byte/s
+32768
+Measuring memory transfer... Message Size: 32768 Byte
+Bandwidth: 1.0988e+11 Byte/s
+65536
+Measuring memory transfer... Message Size: 65536 Byte
+Bandwidth: 2.1479e+11 Byte/s
+131072
+Measuring memory transfer... Message Size: 131072 Byte
+Bandwidth: 4.3839e+11 Byte/s
+262144
+Measuring memory transfer... Message Size: 262144 Byte
+Bandwidth: 8.88e+11 Byte/s
+524288
+Measuring memory transfer... Message Size: 524288 Byte
+Bandwidth: 1.7683e+12 Byte/s
+1048576
+Measuring memory transfer... Message Size: 1048576 Byte
+Bandwidth: 3.5288e+12 Byte/s
