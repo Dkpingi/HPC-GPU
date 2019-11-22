@@ -191,7 +191,7 @@ main(int argc, char * argv[])
               << "***" << std::endl;
 
     ChTimer memCpyH2DTimer, memCpyD2HTimer;
-    ChTimer kernelTimer;
+    ChTimer kernelTimer, CPUTimer;
 
     //
     // Allocate Memory
@@ -360,9 +360,11 @@ main(int argc, char * argv[])
         float* h_matrixD = static_cast<float*>(
                 calloc(static_cast<size_t>(matrixSize), sizeof(*h_matrixD)));
 
+	CPUTimer.start();
         MatrixMulOnHostBlocked(h_matrixA, h_matrixB, h_matrixD, 
                 static_cast<long>(matrixWidth), 32);
-
+	CPUTimer.stop();
+	std::cout<< "CPU took " << 1e3*CPUTimer.getTime() << "ms." << std::endl;
         bool resultOk = MatrixCompare(h_matrixC, h_matrixD, 
                 static_cast<long>(matrixWidth));
 
