@@ -1,0 +1,60 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage[margin=1.0in]{geometry}
+\begin{document}
+\section{Exercise 1}
+Assumption:
+\begin{equation}
+P ( A \cup D ) = P ( A ) + P ( D ) - P ( A \cap D )
+\end{equation}
+Convert D $\rightarrow$ B $\cup$ C:
+\begin{equation}
+P ( A \cup B \cup C ) = P ( A ) + P ( B \cup C ) - P ( A \cap (B \cup C) )
+\end{equation}
+Evaluate $P(B\cup C)$ with (1):
+\begin{equation}
+P ( A \cup B \cup C ) = P ( A ) + P(B) + P(C) - P(B \cap C) - P ( A \cap (B \cup C) )
+\end{equation}
+Notice that $A \cap (B \cup C) = (A \cap B) \cup (A \cap C)$ and evaluate $P ( A \cap (B \cup C) )$ with (1):
+\begin{equation}
+P (  (A \cap B) \cup (A \cap C)) =  P(A \cap B) + P(A\cap C) - P(A \cap B \cap C)
+\end{equation}
+Where I used $(A \cap B) \cap (A \cap C) = ((A \cap B) \cap A) \cap ( (A \cap B) \cap C) = (A \cap B) \cap (A \cap B \cap C) =  A \cap B \cap C$. \\\\
+Plugging (4) into (3) results in:
+\begin{equation}
+P ( A \cup B \cup C ) = P ( A ) + P(B) + P(C) - P(B \cap C) - P(A \cap B) - P(A\cap C) + P(A \cap B \cap C)
+\end{equation}
+\section{Exercise 2}
+\subsection{}
+Law: Performance doubles every 18 months. \\
+Data: 148,600.0 (Summit) \\
+Equation: $148,600 TFlop/s * 2^{(x/18 months)} = 1,000,000 TFlop/s$ \\
+$ \rightarrow x = 49.5 months $ (Source: Wolframalpha)
+\subsection{}
+Data: \\
+11/2007: 478.2 TFlop/s (LLNL)\\ 11/2011: 10500 TFlop/s (K Computer) \\
+Equation: $478.2 TFlop/s * 2^{(48mo/x)} =  10500 TFlop/s$ \\
+$ \rightarrow x = 10.8$ (Wolframalpha)
+\\ If we replace 18 months with 10.8 months, we get 1 ExaFlop/s in 29.7 months.
+\section{Exercise 3}
+\subsection{}
+$t_{Old} = t_{Calc} + t_{IO}$ \\
+$t_{New} = t_{Calc}/10 + t_{IO}$ \\
+$t_{Calc} = 0.4*t_{Old}$ \\
+$t_{IO} = 0.6 *t_{Old}$ \\
+$ \rightarrow Speedup = t_{Old}/t_{New} = 1/(0.4*0.1 + 0.6) = 1/0.64 = 156.25\%$
+\subsection{}
+As above: \\
+$ \rightarrow SpeedupSQR = t_{OldSQR}/t_{NewSQR} = 1/(0.2*0.1 + 0.8) = 1/0.82 = 122.95\%$ \\
+$ \rightarrow SpeedupFP= t_{OldFP}/t_{NewFP} = 1/(0.5/1.6 + 0.5) = 1/0.8125 = 123.07\%$ \\
+FP is faster, but not by much.
+\subsection{}
+As above: \\
+$ Amdahl: Speedup = 1/((1-P) + P/N)$ \\
+$ \rightarrow 100 = Speedup = 1/(S + (1-S)/128)$ \\
+$ \rightarrow 0.01 = (S + (1-S)/128)$ \\
+$ \rightarrow 1.28 = 128 *S + (1-S)$ \\
+$ \rightarrow 0.28 = 127*S$ \\
+$ \rightarrow S = 0.002205$ \\
+The serial fraction can be up to 0.2205\%.
+\end{document}
