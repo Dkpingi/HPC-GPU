@@ -1,0 +1,270 @@
+**************************************************************************
+***
+*** Starting ...
+***
+***
+*** Grid Dim:  1x1x1
+*** Block Dim: 32x32x1
+***
+Using shMatMul_Kernel
+Result CPU Check disabled
+***
+*** Results:
+*** Matrix width:16
+***    Matrix Size (width*width): 256
+***    Grid size: 1
+***    Block size : 32
+***    Time to Copy to Device: 0.068166 ms
+***    Copy Bandwidth: 0.0300443 GB/s
+***    Time to Copy from Device: 0.021022 ms
+***    Copy Bandwidth: 0.0487109 GB/s
+***    Time for Matrix Multiplication: 0.0259114 ms
+***
+CSV
+ matrixWidth, blockSize, H2D_ms, D2H_ms, matrixMult_ms_complCalc, matrixMult_ms, ITERATIONS, CPU Time
+16, 32, 0.068166, 0.021022, 0.259114, 0.0259114, 10, 0
+CSV
+**************************************************************************
+**************************************************************************
+***
+*** Starting ...
+***
+***
+*** Grid Dim:  1x1x1
+*** Block Dim: 32x32x1
+***
+Using shMatMul_Kernel
+Result CPU Check disabled
+***
+*** Results:
+*** Matrix width:32
+***    Matrix Size (width*width): 1024
+***    Grid size: 1
+***    Block size : 32
+***    Time to Copy to Device: 0.065791 ms
+***    Copy Bandwidth: 0.124516 GB/s
+***    Time to Copy from Device: 0.020114 ms
+***    Copy Bandwidth: 0.203639 GB/s
+***    Time for Matrix Multiplication: 0.0253527 ms
+***
+CSV
+ matrixWidth, blockSize, H2D_ms, D2H_ms, matrixMult_ms_complCalc, matrixMult_ms, ITERATIONS, CPU Time
+32, 32, 0.065791, 0.020114, 0.253527, 0.0253527, 10, 0
+CSV
+**************************************************************************
+**************************************************************************
+***
+*** Starting ...
+***
+***
+*** Grid Dim:  2x2x1
+*** Block Dim: 32x32x1
+***
+Using shMatMul_Kernel
+Result CPU Check disabled
+***
+*** Results:
+*** Matrix width:64
+***    Matrix Size (width*width): 4096
+***    Grid size: 2
+***    Block size : 32
+***    Time to Copy to Device: 0.073124 ms
+***    Copy Bandwidth: 0.448116 GB/s
+***    Time to Copy from Device: 0.021093 ms
+***    Copy Bandwidth: 0.776751 GB/s
+***    Time for Matrix Multiplication: 0.0351656 ms
+***
+CSV
+ matrixWidth, blockSize, H2D_ms, D2H_ms, matrixMult_ms_complCalc, matrixMult_ms, ITERATIONS, CPU Time
+64, 32, 0.073124, 0.021093, 0.351656, 0.0351656, 10, 0
+CSV
+**************************************************************************
+**************************************************************************
+***
+*** Starting ...
+***
+***
+*** Grid Dim:  4x4x1
+*** Block Dim: 32x32x1
+***
+Using shMatMul_Kernel
+Result CPU Check disabled
+***
+*** Results:
+*** Matrix width:128
+***    Matrix Size (width*width): 16384
+***    Grid size: 4
+***    Block size : 32
+***    Time to Copy to Device: 0.085068 ms
+***    Copy Bandwidth: 1.54079 GB/s
+***    Time to Copy from Device: 0.029753 ms
+***    Copy Bandwidth: 2.20267 GB/s
+***    Time for Matrix Multiplication: 0.0871071 ms
+***
+CSV
+ matrixWidth, blockSize, H2D_ms, D2H_ms, matrixMult_ms_complCalc, matrixMult_ms, ITERATIONS, CPU Time
+128, 32, 0.085068, 0.029753, 0.871071, 0.0871071, 10, 0
+CSV
+**************************************************************************
+**************************************************************************
+***
+*** Starting ...
+***
+***
+*** Grid Dim:  8x8x1
+*** Block Dim: 32x32x1
+***
+Using shMatMul_Kernel
+Result CPU Check disabled
+***
+*** Results:
+*** Matrix width:256
+***    Matrix Size (width*width): 65536
+***    Grid size: 8
+***    Block size : 32
+***    Time to Copy to Device: 0.156237 ms
+***    Copy Bandwidth: 3.35572 GB/s
+***    Time to Copy from Device: 0.060693 ms
+***    Copy Bandwidth: 4.31918 GB/s
+***    Time for Matrix Multiplication: 0.364974 ms
+***
+CSV
+ matrixWidth, blockSize, H2D_ms, D2H_ms, matrixMult_ms_complCalc, matrixMult_ms, ITERATIONS, CPU Time
+256, 32, 0.156237, 0.060693, 3.64974, 0.364974, 10, 0
+CSV
+**************************************************************************
+**************************************************************************
+***
+*** Starting ...
+***
+***
+*** Grid Dim:  16x16x1
+*** Block Dim: 32x32x1
+***
+Using shMatMul_Kernel
+Result CPU Check disabled
+***
+*** Results:
+*** Matrix width:512
+***    Matrix Size (width*width): 262144
+***    Grid size: 16
+***    Block size : 32
+***    Time to Copy to Device: 0.419053 ms
+***    Copy Bandwidth: 5.0045 GB/s
+***    Time to Copy from Device: 0.179145 ms
+***    Copy Bandwidth: 5.85323 GB/s
+***    Time for Matrix Multiplication: 2.49921 ms
+***
+CSV
+ matrixWidth, blockSize, H2D_ms, D2H_ms, matrixMult_ms_complCalc, matrixMult_ms, ITERATIONS, CPU Time
+512, 32, 0.419053, 0.179145, 24.9921, 2.49921, 10, 0
+CSV
+**************************************************************************
+**************************************************************************
+***
+*** Starting ...
+***
+***
+*** Grid Dim:  32x32x1
+*** Block Dim: 32x32x1
+***
+Using shMatMul_Kernel
+Result CPU Check disabled
+***
+*** Results:
+*** Matrix width:1024
+***    Matrix Size (width*width): 1048576
+***    Grid size: 32
+***    Block size : 32
+***    Time to Copy to Device: 1.49106 ms
+***    Copy Bandwidth: 5.62593 GB/s
+***    Time to Copy from Device: 0.654771 ms
+***    Copy Bandwidth: 6.40576 GB/s
+***    Time for Matrix Multiplication: 19.2583 ms
+***
+CSV
+ matrixWidth, blockSize, H2D_ms, D2H_ms, matrixMult_ms_complCalc, matrixMult_ms, ITERATIONS, CPU Time
+1024, 32, 1.49106, 0.654771, 192.583, 19.2583, 10, 0
+CSV
+**************************************************************************
+**************************************************************************
+***
+*** Starting ...
+***
+***
+*** Grid Dim:  64x64x1
+*** Block Dim: 32x32x1
+***
+Using shMatMul_Kernel
+Result CPU Check disabled
+***
+*** Results:
+*** Matrix width:2048
+***    Matrix Size (width*width): 4194304
+***    Grid size: 64
+***    Block size : 32
+***    Time to Copy to Device: 5.58109 ms
+***    Copy Bandwidth: 6.01216 GB/s
+***    Time to Copy from Device: 2.57396 ms
+***    Copy Bandwidth: 6.51805 GB/s
+***    Time for Matrix Multiplication: 151.929 ms
+***
+CSV
+ matrixWidth, blockSize, H2D_ms, D2H_ms, matrixMult_ms_complCalc, matrixMult_ms, ITERATIONS, CPU Time
+2048, 32, 5.58109, 2.57396, 1519.29, 151.929, 10, 0
+CSV
+**************************************************************************
+**************************************************************************
+***
+*** Starting ...
+***
+***
+*** Grid Dim:  128x128x1
+*** Block Dim: 32x32x1
+***
+Using shMatMul_Kernel
+Result CPU Check disabled
+***
+*** Results:
+*** Matrix width:4096
+***    Matrix Size (width*width): 16777216
+***    Grid size: 128
+***    Block size : 32
+***    Time to Copy to Device: 22.0112 ms
+***    Copy Bandwidth: 6.09771 GB/s
+***    Time to Copy from Device: 10.2389 ms
+***    Copy Bandwidth: 6.55428 GB/s
+***    Time for Matrix Multiplication: 1214.37 ms
+***
+CSV
+ matrixWidth, blockSize, H2D_ms, D2H_ms, matrixMult_ms_complCalc, matrixMult_ms, ITERATIONS, CPU Time
+4096, 32, 22.0112, 10.2389, 12143.7, 1214.37, 10, 0
+CSV
+**************************************************************************
+**************************************************************************
+***
+*** Starting ...
+***
+***
+*** Grid Dim:  256x256x1
+*** Block Dim: 32x32x1
+***
+Using shMatMul_Kernel
+Result CPU Check disabled
+***
+*** Results:
+*** Matrix width:8192
+***    Matrix Size (width*width): 67108864
+***    Grid size: 256
+***    Block size : 32
+***    Time to Copy to Device: 87.6796 ms
+***    Copy Bandwidth: 6.1231 GB/s
+***    Time to Copy from Device: 40.9038 ms
+***    Copy Bandwidth: 6.5626 GB/s
+***    Time for Matrix Multiplication: 9715.72 ms
+***
+CSV
+ matrixWidth, blockSize, H2D_ms, D2H_ms, matrixMult_ms_complCalc, matrixMult_ms, ITERATIONS, CPU Time
+8192, 32, 87.6796, 40.9038, 97157.2, 9715.72, 10, 0
+CSV
+**************************************************************************
