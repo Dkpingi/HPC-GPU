@@ -10,4 +10,4 @@ clean:
 rebuild: clean build
 
 ./bin/relaxation: ./src/main.c
-	mpicxx "-Wall" -o $@ $^ -lm $(INC)
+	mpicxx "-Wall" -O3 -o $@ $^ -lm $(INC)

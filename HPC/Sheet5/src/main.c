@@ -25,9 +25,8 @@ for(t = 0;t<nIterations;t++)
 	{
 		for(j=1;j<gridSize-1;j++)
 		{
-			tempgrid[i*gridSize + j] = grid[i*gridSize + j] 
-					     + (24.0/100.0)*(grid[i*gridSize + j-1] 
-	        	 		     - 4.0*grid[i*gridSize + j] + grid[i*gridSize + j+1]
+			tempgrid[i*gridSize + j] = (24.0/100.0)*(grid[i*gridSize + j-1] 
+	        	 		     + (grid[i*gridSize + j]/6.0) + grid[i*gridSize + j+1]
 					     + grid[(i+1)*gridSize + j] + grid[(i-1)*gridSize + j]);
 		}
 	}
@@ -39,7 +38,8 @@ for(t = 0;t<nIterations;t++)
 int main ( int argc, char **argv )
 {
 
-
+ double sendTime = 0.0;
+ double recTime = 0.0;
  MPI_Init ( &argc, &argv ); //Initialisation of MPI
  //printf("blubb???\n");
  int i,j,t,size,rank;
@@ -120,115 +120,105 @@ for (j = 0; j < m; j++ ) {
 		}
 	}
  }
+MPI_Barrier(MPI_COMM_WORLD);
  if(rank == 0)
  {
 	parTimer.start();
- }
+ }	
+double* upsignal   =   (double*) malloc(gridSize*sizeof(double));
+double* downsignal =   (double*) malloc(gridSize*sizeof(double));
+double* up         =   (double*) malloc(gridSize*sizeof(double));
+double* down       =   (double*) malloc(gridSize*sizeof(double));
+double* upbuffer   =   (double*) malloc(gridSize*sizeof(double));
+double* downbuffer =   (double*) malloc(gridSize*sizeof(double));
  for(t=0;t<nIterations;t++)
  {	
-	//printf("%d %d \n",rank,t);
+	MPI_Request reqs,reqs2,reqr,reqr2;
+	if(rank <= 1)
+	{
+		memcpy(upsignal, grid_old + gridSize,gridSize*sizeof(double));
+	}
+	else
+	{
+		memcpy(upsignal, grid_old,gridSize*sizeof(double));
+	}
+		
+	memcpy(downsignal, grid_old,gridSize*sizeof(double));
+
+	MPI_Isend ( upsignal, gridSize, MPI_DOUBLE, (rank+size-1)%size, 0, MPI_COMM_WORLD,&reqs);		
+	MPI_Isend ( downsignal, gridSize, MPI_DOUBLE, (rank + 1)%size, 0, MPI_COMM_WORLD,&reqs2);	
+		
+	MPI_Irecv ( down, gridSize, MPI_DOUBLE, (rank+1)%size, 0, MPI_COMM_WORLD, &reqr );
+	MPI_Irecv ( up, gridSize, MPI_DOUBLE, (rank+size-1)%size, 0, MPI_COMM_WORLD,&reqr2 );
+	
 	for(i=0;i<nRowsMax;i++)
 	{
-		//printf("%d %d %d %d \n",rank,t,i,j);
-		double upsignal,downsignal;
-		double up, down;
 		int arrayrow = rank+i*size;
- 		for(j=1;j<gridSize-1;j++)
+		sendTime -= MPI_Wtime();
+		MPI_Wait(&reqs,MPI_STATUS_IGNORE);
+		MPI_Wait(&reqs2,MPI_STATUS_IGNORE);
+                sendTime += MPI_Wtime();
+		memcpy(downsignal, grid_old + i*gridSize,gridSize*sizeof(double));
+		if(rank <= 1)
+		{
+			if(i+1 < nRowsMax)
+			{
+				memcpy(upsignal, grid_old + (i+1)*gridSize,gridSize*sizeof(double));
+			}
+
+		}
+		else
+		{
+			memcpy(upsignal, grid_old + i*gridSize,gridSize*sizeof(double));
+		}
+
+		
+
+		MPI_Isend ( upsignal, gridSize, MPI_DOUBLE, (rank+size-1)%size, i, MPI_COMM_WORLD,&reqs);
+		MPI_Isend ( downsignal, gridSize, MPI_DOUBLE, (rank + 1)%size, i, MPI_COMM_WORLD,&reqs2);
+
+		recTime -= MPI_Wtime();
+		MPI_Wait(&reqr,MPI_STATUS_IGNORE);
+		MPI_Wait(&reqr2,MPI_STATUS_IGNORE);
+		recTime += MPI_Wtime();	
+
+		memcpy(down,downbuffer,gridSize*sizeof(double));
+		memcpy(up,upbuffer,gridSize*sizeof(double));
+
+		MPI_Irecv ( downbuffer, gridSize, MPI_DOUBLE, (rank+1)%size, i, MPI_COMM_WORLD, &reqr );
+		MPI_Irecv ( upbuffer, gridSize, MPI_DOUBLE, (rank+size-1)%size, i, MPI_COMM_WORLD, &reqr2 );
+
+		for(j=1;j<gridSize-1;j++)
  		{
 			if(rank == 0)
 			{
-				if(i+1 < nRowsMax)
+				if (i+1 < nRows)
 				{
-					upsignal = grid_old[(i+1)*gridSize + j];
+					grid_new[(i+1)*gridSize + j] = (24.0/100.0)*(grid_old[(i+1)*gridSize + j-1] 
+								     + (grid_old[(i+1)*gridSize + j]/6.0) 
+								     + grid_old[(i+1)*gridSize + j+1] + up[j] + down[j]);
 				}
-				else
-				{
-					upsignal = 0.0;
-				}
-				if(i < nRowsMax)
-				{
-					downsignal = grid_old[i*gridSize + j];
-				}
-				else
-				{
-					downsignal = 0.0;
-				}
-				//printf("%d %d %g\n",i,j,downsignal);
-				MPI_Send ( &upsignal, 1, MPI_DOUBLE, (rank+size-1)%size, j, MPI_COMM_WORLD);
-				MPI_Recv ( &down, 1, MPI_DOUBLE, (rank+1)%size, j, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
-				MPI_Send ( &downsignal, 1, MPI_DOUBLE, (rank + 1)%size, j, MPI_COMM_WORLD);
-				MPI_Recv ( &up, 1, MPI_DOUBLE, (rank+size-1)%size, j, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
 			}
-			else
+			else if(arrayrow > 0 && arrayrow < gridSize-1)
 			{
 
-				if(rank == 1 && i+1 < nRowsMax)
-				{
-					upsignal = grid_old[(i+1)*gridSize + j];
-				}
-				else if (rank != 1 && i < nRowsMax)
-				{
-					upsignal = grid_old[i*gridSize + j];
-				}
-				else
-				{
-					upsignal = 0.0;
-				}
-					
-				if(i < nRowsMax)
-				{
-					downsignal = grid_old[i*gridSize + j];
-					
-				}
-				else
-				{
-					downsignal = 0.0;
-				}
-				
-				MPI_Send ( &upsignal, 1, MPI_DOUBLE, (rank+size-1)%size, j, MPI_COMM_WORLD);
-				MPI_Recv ( &down, 1, MPI_DOUBLE, (rank+1)%size, j, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
-				MPI_Send ( &downsignal, 1, MPI_DOUBLE, (rank + 1)%size, j, MPI_COMM_WORLD);
-				MPI_Recv ( &up, 1, MPI_DOUBLE, (rank+size-1)%size, j, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
+					grid_new[i*gridSize + j] = (24.0/100.0)*(grid_old[i*gridSize + j-1] 
+								 + (grid_old[i*gridSize + j]/6.0) 
+								 + grid_old[i*gridSize + j+1] + up[j] + down[j]);
 			}
-			if(rank == 0 && i+1 < nRows)
-			{
-					//printf("calc: %d\n",(i+1)*gridSize + j);
-					//printf("nRows: %d\n",nRows);
-					grid_new[(i+1)*gridSize + j] = grid_old[(i+1)*gridSize + j] 
-								     + (24.0/100.0)*(grid_old[(i+1)*gridSize + j-1] 
-								     - 4.0*grid_old[(i+1)*gridSize + j] 
-								     + grid_old[(i+1)*gridSize + j+1] + up + down);
-			}
-			if(arrayrow > 0 && arrayrow < gridSize-1)
-			{
 
-				if(rank != 0 && i < nRows)
-				{
-					//printf("calc2: %d\n",i*gridSize + j);
-					//printf("nRows2: %d\n",nRows);
-					grid_new[i*gridSize + j] = grid_old[i*gridSize + j] 
-								 + (24.0/100.0)*(grid_old[i*gridSize + j-1] 
-								 - 4.0*grid_old[i*gridSize + j] + grid_old[i*gridSize + j+1] + up + down);
-					/**if(rank == 3)
-					{
-						printf("%d, %d,%g,%g\n",i,j,up,down);
-					}**/
-				}
-			}
-			//MPI_Barrier(MPI_COMM_WORLD);
 		}
-		
+
+
+
 	}
 	
 	double* temp = grid_old;
 	grid_old = grid_new;
 	grid_new = temp;
 }
+MPI_Barrier(MPI_COMM_WORLD);
 
-
-
-//printf("goal!\n");
- MPI_Barrier(MPI_COMM_WORLD);
 if(rank == 0)
 {
 	parTimer.stop();
@@ -287,7 +277,10 @@ if(rank == 0)
 	printf("size: %d,success!\n",gridSize);
 	printf("seqTimer: %f,parTimer: %f\n",seqTimer.getTime(),parTimer.getTime());
 }
-
+sendTime /= nRowsMax*nIterations;
+recTime/=nRowsMax*nIterations;
+printf("rank %d avg sendWaitTime(ms): %g\n",rank,sendTime*1e6);
+printf("rank %d avg recWaitTime(ms): %g\n",rank,recTime*1e6);
 //printf("yay!");
  //endtime = MPI_Wtime();
  //double runtime = endtime-starttime;
