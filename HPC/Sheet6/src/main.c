@@ -40,6 +40,9 @@ int main ( int argc, char **argv )
 
  double sendTime = 0.0;
  double recTime = 0.0;
+
+double seqStart,seqEnd;
+double parStart,parEnd;
  MPI_Init ( &argc, &argv ); //Initialisation of MPI
  //printf("blubb???\n");
  int i,j,t,size,rank;
@@ -68,9 +71,9 @@ if(rank == 0)
 		}
 	}
  }
-seqTimer.start();
+seqStart = MPI_Wtime();
 sequentialRelaxation(seqgrid,gridSize,nIterations);
-seqTimer.stop();
+seqEnd = MPI_Wtime();
 }
 MPI_Barrier(MPI_COMM_WORLD);
  //starttime = MPI_Wtime();
@@ -123,14 +126,12 @@ for (j = 0; j < m; j++ ) {
 MPI_Barrier(MPI_COMM_WORLD);
  if(rank == 0)
  {
-	parTimer.start();
+	parStart = MPI_Wtime();
  }	
 double* upsignal   =   (double*) malloc(gridSize*sizeof(double));
 double* downsignal =   (double*) malloc(gridSize*sizeof(double));
 double* up         =   (double*) malloc(gridSize*sizeof(double));
 double* down       =   (double*) malloc(gridSize*sizeof(double));
-double* upbuffer   =   (double*) malloc(gridSize*sizeof(double));
-double* downbuffer =   (double*) malloc(gridSize*sizeof(double));
  for(t=0;t<nIterations;t++)
  {	
 	MPI_Request reqs,reqs2,reqr,reqr2;
@@ -154,10 +155,10 @@ double* downbuffer =   (double*) malloc(gridSize*sizeof(double));
 	for(i=0;i<nRowsMax;i++)
 	{
 		int arrayrow = rank+i*size;
-		sendTime -= MPI_Wtime();
+		//sendTime -= MPI_Wtime();
 		MPI_Wait(&reqs,MPI_STATUS_IGNORE);
 		MPI_Wait(&reqs2,MPI_STATUS_IGNORE);
-                sendTime += MPI_Wtime();
+                //sendTime += MPI_Wtime();
 		memcpy(downsignal, grid_old + i*gridSize,gridSize*sizeof(double));
 		if(rank <= 1)
 		{
@@ -172,21 +173,15 @@ double* downbuffer =   (double*) malloc(gridSize*sizeof(double));
 			memcpy(upsignal, grid_old + i*gridSize,gridSize*sizeof(double));
 		}
 
-		
-
 		MPI_Isend ( upsignal, gridSize, MPI_DOUBLE, (rank+size-1)%size, i, MPI_COMM_WORLD,&reqs);
 		MPI_Isend ( downsignal, gridSize, MPI_DOUBLE, (rank + 1)%size, i, MPI_COMM_WORLD,&reqs2);
 
-		recTime -= MPI_Wtime();
+		//recTime -= MPI_Wtime();
 		MPI_Wait(&reqr,MPI_STATUS_IGNORE);
 		MPI_Wait(&reqr2,MPI_STATUS_IGNORE);
-		recTime += MPI_Wtime();	
+		//recTime += MPI_Wtime();	
 
-		memcpy(down,downbuffer,gridSize*sizeof(double));
-		memcpy(up,upbuffer,gridSize*sizeof(double));
-
-		MPI_Irecv ( downbuffer, gridSize, MPI_DOUBLE, (rank+1)%size, i, MPI_COMM_WORLD, &reqr );
-		MPI_Irecv ( upbuffer, gridSize, MPI_DOUBLE, (rank+size-1)%size, i, MPI_COMM_WORLD, &reqr2 );
+		
 
 		for(j=1;j<gridSize-1;j++)
  		{
@@ -209,7 +204,8 @@ double* downbuffer =   (double*) malloc(gridSize*sizeof(double));
 
 		}
 
-
+		MPI_Irecv ( down, gridSize, MPI_DOUBLE, (rank+1)%size, i, MPI_COMM_WORLD, &reqr );
+		MPI_Irecv ( up, gridSize, MPI_DOUBLE, (rank+size-1)%size, i, MPI_COMM_WORLD, &reqr2 );
 
 	}
 	
@@ -221,7 +217,7 @@ MPI_Barrier(MPI_COMM_WORLD);
 
 if(rank == 0)
 {
-	parTimer.stop();
+	parEnd = MPI_Wtime();
 }
 
 double* buffer = (double*) malloc(nRowsMax*gridSize*sizeof(double));
@@ -266,7 +262,10 @@ double* grid = (double*) malloc(gridSize*gridSize*sizeof(double));
 
 fflush(NULL);
 MPI_Barrier(MPI_COMM_WORLD);
-
+double seqTime = (seqEnd - seqStart)*1e6/nIterations;
+double parTime = (parEnd - parStart)*1e6/nIterations;
+double Speedup = seqTime/parTime;
+double Efficiency = Speedup/size;
 if(rank == 0)
 {
 	if(gridSize < 16)
@@ -274,13 +273,14 @@ if(rank == 0)
 	printOutMatrix(grid,gridSize);
 	printOutMatrix(seqgrid,gridSize);
 	}
-	printf("size: %d,success!\n",gridSize);
-	printf("seqTimer: %f,parTimer: %f\n",seqTimer.getTime(),parTimer.getTime());
+	printf("matrixsize: %d,processes: %d\n",gridSize,size);
+	printf("seqTimer(ms): %f,parTimer(ms): %f\n",seqTime,parTime);
+	printf("Speedup: %f,Efficiency: %f\n",Speedup,Efficiency);
 }
-sendTime /= nRowsMax*nIterations;
-recTime/=nRowsMax*nIterations;
-printf("rank %d avg sendWaitTime(ms): %g\n",rank,sendTime*1e6);
-printf("rank %d avg recWaitTime(ms): %g\n",rank,recTime*1e6);
+//sendTime /= nRowsMax*nIterations;
+//recTime/=nRowsMax*nIterations;
+//printf("rank %d avg sendWaitTime(ms): %g\n",rank,sendTime*1e6);
+//printf("rank %d avg recWaitTime(ms): %g\n",rank,recTime*1e6);
 //printf("yay!");
  //endtime = MPI_Wtime();
  //double runtime = endtime-starttime;
