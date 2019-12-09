@@ -4,6 +4,7 @@
 #include <math.h>
 #include <string.h>
 #include <chTimer.hpp>
+
 //stole this from gpu course
 void printOutMatrix (double *matrix, int width) {
 	int i;
@@ -13,11 +14,26 @@ void printOutMatrix (double *matrix, int width) {
 		}
 	printf ("\n");
 }
-void sequentialRelaxation(double *grid,int gridSize,int nIterations)
+//this also (converted to double)
+bool MatrixCompare ( double* P, double* Q, long  matWidth)
+{
+	long i;
+
+	for ( i = 0; i < matWidth * matWidth; i++ ) {
+		//if ( P[i] != Q[i] )
+		// Holger 09.04.2014 floating point calculations might have small errors depending on the operation order
+		if ( fabs ( ( P[i]-Q[i] ) / ( P[i]+Q[i] ) ) > 1E-05 )
+			return false;
+	}
+	return true;
+}
+
+void sequentialRelaxation(double **grid,int gridSize,int nIterations)
 {
 int i,j,t;
-double* tempgrid = (double*) malloc(gridSize*gridSize*sizeof(double));
-memcpy(tempgrid,grid,gridSize*gridSize*sizeof(double));
+double* old_grid = *grid; 
+double* new_grid = (double*) malloc(gridSize*gridSize*sizeof(double));
+memcpy(new_grid,old_grid,gridSize*gridSize*sizeof(double));
 
 for(t = 0;t<nIterations;t++)
 {
@@ -25,24 +41,25 @@ for(t = 0;t<nIterations;t++)
 	{
 		for(j=1;j<gridSize-1;j++)
 		{
-			tempgrid[i*gridSize + j] = (24.0/100.0)*(grid[i*gridSize + j-1] 
-	        	 		     + (grid[i*gridSize + j]/6.0) + grid[i*gridSize + j+1]
-					     + grid[(i+1)*gridSize + j] + grid[(i-1)*gridSize + j]);
+			new_grid[i*gridSize + j] = (24.0/100.0)*(old_grid[i*gridSize + j-1] 
+	        	 		     + (old_grid[i*gridSize + j]/6.0) + old_grid[i*gridSize + j+1]
+					     + old_grid[(i+1)*gridSize + j] + old_grid[(i-1)*gridSize + j]);
 		}
 	}
-	double* temp = tempgrid;
-	tempgrid = grid;
-	grid = temp;
+	double* temp = old_grid;
+	old_grid = new_grid;
+	new_grid = temp;
 }
+*grid = old_grid;
 }
 int main ( int argc, char **argv )
 {
 
- double sendTime = 0.0;
- double recTime = 0.0;
+ //double sendTime = 0.0;
+ //double recTime = 0.0;
 
-double seqStart,seqEnd;
-double parStart,parEnd;
+double seqStart = 0.0,seqEnd = 0.0;
+double parStart = 0.0,parEnd = 0.0;
  MPI_Init ( &argc, &argv ); //Initialisation of MPI
  //printf("blubb???\n");
  int i,j,t,size,rank;
@@ -72,7 +89,7 @@ if(rank == 0)
 	}
  }
 seqStart = MPI_Wtime();
-sequentialRelaxation(seqgrid,gridSize,nIterations);
+sequentialRelaxation(&seqgrid,gridSize,nIterations);
 seqEnd = MPI_Wtime();
 }
 MPI_Barrier(MPI_COMM_WORLD);
@@ -159,22 +176,22 @@ double* down       =   (double*) malloc(gridSize*sizeof(double));
 		MPI_Wait(&reqs,MPI_STATUS_IGNORE);
 		MPI_Wait(&reqs2,MPI_STATUS_IGNORE);
                 //sendTime += MPI_Wtime();
-		memcpy(downsignal, grid_old + i*gridSize,gridSize*sizeof(double));
+		memcpy(downsignal, grid_old + (i+1)*gridSize,gridSize*sizeof(double));
 		if(rank <= 1)
 		{
-			if(i+1 < nRowsMax)
+			if(i+2 < nRowsMax)
 			{
-				memcpy(upsignal, grid_old + (i+1)*gridSize,gridSize*sizeof(double));
+				memcpy(upsignal, grid_old + (i+2)*gridSize,gridSize*sizeof(double));
 			}
 
 		}
 		else
 		{
-			memcpy(upsignal, grid_old + i*gridSize,gridSize*sizeof(double));
+			memcpy(upsignal, grid_old + (i+1)*gridSize,gridSize*sizeof(double));
 		}
 
-		MPI_Isend ( upsignal, gridSize, MPI_DOUBLE, (rank+size-1)%size, i, MPI_COMM_WORLD,&reqs);
-		MPI_Isend ( downsignal, gridSize, MPI_DOUBLE, (rank + 1)%size, i, MPI_COMM_WORLD,&reqs2);
+		MPI_Isend ( upsignal, gridSize, MPI_DOUBLE, (rank+size-1)%size, i+1, MPI_COMM_WORLD,&reqs);
+		MPI_Isend ( downsignal, gridSize, MPI_DOUBLE, (rank + 1)%size, i+1, MPI_COMM_WORLD,&reqs2);
 
 		//recTime -= MPI_Wtime();
 		MPI_Wait(&reqr,MPI_STATUS_IGNORE);
@@ -187,7 +204,7 @@ double* down       =   (double*) malloc(gridSize*sizeof(double));
  		{
 			if(rank == 0)
 			{
-				if (i+1 < nRows)
+				if (i+1 < nRows && (i+1)*size != gridSize-1)
 				{
 					grid_new[(i+1)*gridSize + j] = (24.0/100.0)*(grid_old[(i+1)*gridSize + j-1] 
 								     + (grid_old[(i+1)*gridSize + j]/6.0) 
@@ -204,8 +221,8 @@ double* down       =   (double*) malloc(gridSize*sizeof(double));
 
 		}
 
-		MPI_Irecv ( down, gridSize, MPI_DOUBLE, (rank+1)%size, i, MPI_COMM_WORLD, &reqr );
-		MPI_Irecv ( up, gridSize, MPI_DOUBLE, (rank+size-1)%size, i, MPI_COMM_WORLD, &reqr2 );
+		MPI_Irecv ( down, gridSize, MPI_DOUBLE, (rank+1)%size, i+1, MPI_COMM_WORLD, &reqr );
+		MPI_Irecv ( up, gridSize, MPI_DOUBLE, (rank+size-1)%size, i+1, MPI_COMM_WORLD, &reqr2 );
 
 	}
 	
@@ -266,16 +283,35 @@ double seqTime = (seqEnd - seqStart)*1e6/nIterations;
 double parTime = (parEnd - parStart)*1e6/nIterations;
 double Speedup = seqTime/parTime;
 double Efficiency = Speedup/size;
+
+
+
+
+
 if(rank == 0)
 {
+
+	printf("matrixsize: %d,processes: %d\n",gridSize,size);
+	printf("nIterations: %d\n",nIterations);
+	printf("seqTimer(ms): %f,parTimer(ms): %f\n",seqTime,parTime);
+	printf("Speedup: %f,Efficiency: %f\n\n",Speedup,Efficiency);
+
+
+bool resultOk = MatrixCompare(grid, seqgrid, 
+                static_cast<long>(gridSize));
+
+
+if (!resultOk) {
+	std::cout << "\033[31m***" << std::endl
+                      << "*** Error - The two matrices are different!!!" << std::endl
+                      << "***\033[0m" << std::endl;
 	if(gridSize < 16)
 	{
 	printOutMatrix(grid,gridSize);
 	printOutMatrix(seqgrid,gridSize);
 	}
-	printf("matrixsize: %d,processes: %d\n",gridSize,size);
-	printf("seqTimer(ms): %f,parTimer(ms): %f\n",seqTime,parTime);
-	printf("Speedup: %f,Efficiency: %f\n",Speedup,Efficiency);
+        exit(-1);
+        }
 }
 //sendTime /= nRowsMax*nIterations;
 //recTime/=nRowsMax*nIterations;

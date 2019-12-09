@@ -6,9 +6,6 @@
 # Total amount of nodes
 #SBATCH --nodes=2
 
-# Total amount of processes, spread over nodes
-#SBATCH --ntasks=4
-
 # Runtime of this jobs is less then 15 minutes.
 #SBATCH --time=0:30:00
 
@@ -22,7 +19,18 @@ module purge > /dev/null 2>&1
 module load cmake
 module load gcc
 module load mpi
-for i in {2..1000..1}
+
+for i in {2..16..1}
 do
-mpirun ./bin/relaxation $i 10
+for j in {1..100..1}
+do
+mpirun -np $i ./bin/relaxation $j 100
 done
+done
+
+for i in {1,10,100,1000,10000,100000,1000000}
+do
+mpirun -np 8 ./bin/relaxation 100 $i
+done
+
+
