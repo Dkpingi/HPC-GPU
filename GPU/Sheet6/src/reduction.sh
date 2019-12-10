@@ -4,7 +4,7 @@
 #SBATCH -w creek04
 
 rm greduction.txt
-for i in {7..16..1}
+for i in {8..17..1}
 do
 k=$((2**$i))
 bin/reduction -s $k -t 64

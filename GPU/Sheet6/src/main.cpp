@@ -21,7 +21,7 @@
 
 const static int DEFAULT_MATRIX_SIZE = 1024;
 const static int DEFAULT_BLOCK_DIM   =  128;
-const static int nIterations = 1000; //Seems to have believable outcomes for 1,10,100,1000 but not for 10000, where performance decreases significantly for both CPU and GPU
+const static int nIterations = 100000;
 
 //
 // Function Prototypes
@@ -29,6 +29,7 @@ const static int nIterations = 1000; //Seems to have believable outcomes for 1,1
 void printHelp(char *);
 
 extern void reduction_Kernel_Wrapper(dim3 gridSize, dim3 blockSize, int numElements, float* dataIn, float* dataOut);
+extern void opt_reduction_Kernel_Wrapper(dim3 gridSize, dim3 blockSize, int numElements, float* dataIn, float* dataOut);
 
 void sequentialCPUReduction(int numElements,float* dataIn, float* dataOut)
 {
@@ -58,7 +59,7 @@ main(int argc, char * argv[])
 			  << "*** Starting ..." << std::endl
 			  << "***" << std::endl;
 	ChTimer memCpyH2DTimer, memCpyD2HTimer;
-	ChTimer kernelTimer, CPUTimer;
+	ChTimer kernelTimer,optkernelTimer, CPUTimer;
 
 	//
 	// Allocate Memory
@@ -110,6 +111,9 @@ main(int argc, char * argv[])
 				(malloc(static_cast<size_t>(numElements * sizeof(*h_dataIn))));
         float* CPU_dataOut = static_cast<float*>
 				(malloc(static_cast<size_t>(sizeof(*h_dataOut))));
+
+	float* optResult = static_cast<float*>
+			(malloc(static_cast<size_t>(sizeof(*h_dataOut))));
 
 	if (h_dataIn == NULL || h_dataOut == NULL ||
 		d_dataIn == NULL || d_dataOut == NULL||
@@ -167,10 +171,10 @@ main(int argc, char * argv[])
 
 	gridSize = ceil(static_cast<float>(numElements) / static_cast<float>(blockSize));
 
-	if (gridSize > 1024)
+	if (gridSize > 1024 && gridSize < 2)
 	{
 		std::cout << "\033[31m***" << std::endl
-		          << "*** Error - The number of blocks is too big because it equals the number of threads in the second Kernel call" 				  << std::endl
+		          << "*** Error - grid cannot be larger than 1024 or smaller than 2" << std::endl
 		          << "***\033[0m" << std::endl;
 
 		exit(-1);
@@ -179,14 +183,28 @@ main(int argc, char * argv[])
 	dim3 block_dim = dim3(blockSize);
 	printf("Launch Kernel with %d threads,%d blocks,%f kB of shared memory per block\n", 
 		blockSize, gridSize, 1e-3*blockSize*sizeof(float));
+
+	optkernelTimer.start();
+	for(int i=0;i<nIterations;i++)
+	{
+		opt_reduction_Kernel_Wrapper(grid_dim, block_dim, numElements, d_dataIn, d_dataOut);
+	}
+	cudaDeviceSynchronize();
+	optkernelTimer.stop();
+
+	// store result to compare
+	cudaMemcpy(optResult, d_dataOut, 
+			static_cast<size_t>(sizeof(*d_dataOut)), 
+			cudaMemcpyDeviceToHost);
+
 	kernelTimer.start();
 	for(int i=0;i<nIterations;i++)
 	{
 		reduction_Kernel_Wrapper(grid_dim, block_dim, numElements, d_dataIn, d_dataOut);
-		// Synchronize
-		cudaDeviceSynchronize();
 	}
-	
+	cudaDeviceSynchronize();
+	kernelTimer.stop();
+
 	// Check for Errors
 	cudaError_t cudaError = cudaGetLastError();
 	if (cudaError != cudaSuccess)
@@ -198,8 +216,6 @@ main(int argc, char * argv[])
 
 		return -1;
 	}
-
-	kernelTimer.stop();
 
 	//
 	// Copy Back Data
@@ -216,13 +232,16 @@ main(int argc, char * argv[])
 	// Sequential CPU Part
 	//
 	CPUTimer.start();
+
 	for(int i=0;i<nIterations;i++)
 		sequentialCPUReduction(numElements,CPU_dataIn,CPU_dataOut);
+
 	CPUTimer.stop();
 	
 	printf("CPU_Result: %f\n",*CPU_dataOut);
 	printf("GPU_Result: %f\n",*h_dataOut);
-	if(*CPU_dataOut != *h_dataOut)
+	printf("optGPU_Result: %f\n",*optResult);
+	if(*CPU_dataOut != *h_dataOut || *CPU_dataOut != *optResult)
 	{
 		std::cout << "Results don't match!" << std::endl;
 		exit(-1);
@@ -248,6 +267,7 @@ main(int argc, char * argv[])
 	std::cout << "***" << std::endl
 			  << "*** Results:" << std::endl
 			  << "***    Num Elements: " << numElements << std::endl
+			  << "***    Iterations: " << nIterations << std::endl
 			  << "***    Time to Copy to Device: " << 1e3 * memCpyH2DTimer.getTime()
 			  	<< " ms" << std::endl
 			  << "***    Copy Bandwidth: " 
@@ -261,7 +281,10 @@ main(int argc, char * argv[])
 			  << "***    Time for Reduction: " << 1e3 * kernelTimer.getTime()
 				<< " ms" << std::endl
 			  << "***    GPU Reduction Bandwidth: " 
-			  	<< 1e-9 * kernelTimer.getBandwidth(nIterations * numElements * sizeof(*h_dataIn))
+			  	<< 1e-9 * kernelTimer.getBandwidth((double) nIterations * numElements * sizeof(*h_dataIn))
+				<< " GB/s" << std::endl
+			  << "***    optGPU Reduction Bandwidth: " 
+			  	<< 1e-9 * optkernelTimer.getBandwidth((double) nIterations * numElements * sizeof(*h_dataIn))
 				<< " GB/s" << std::endl
 			  << "***" << std::endl;
 	std::cout << "CPU:" << std::endl
@@ -270,7 +293,7 @@ main(int argc, char * argv[])
 			  << "***    Time for Reduction: " << 1e3 * CPUTimer.getTime()
 				  << " ms" << std::endl
 			  << "***    CPU Reduction Bandwidth: " 
-			  	<< 1e-9 * CPUTimer.getBandwidth(nIterations * numElements * sizeof(*CPU_dataIn))
+			  	<< 1e-9 * CPUTimer.getBandwidth((double) nIterations * numElements * sizeof(*CPU_dataIn))
 				<< " GB/s" << std::endl
 			  << "***" << std::endl;
  
@@ -283,11 +306,14 @@ main(int argc, char * argv[])
 	}
 	if(fin.peek() == std::fstream::traits_type::eof())
 	{
-		fout << "DataSize" << " " 
-		<< "CPUBandwidth" << "\n";
+		fout << "DataSize" << " " << "BlockSize" << " "
+		<< "CPUBandwidth" << " " << "GPUBandwidth" << " "
+		<< "optGPUBandwidth\n";
 	} 
-		fout << numElements << " " 
-		<< 1e-9 * CPUTimer.getBandwidth(sizeof(*CPU_dataOut)) << "\n";
+		fout << numElements << " " << blockSize << " " 
+		<< 1e-9 * CPUTimer.getBandwidth((double) nIterations * numElements * sizeof(*CPU_dataIn)) << " " 
+		<< 1e-9 * kernelTimer.getBandwidth((double) nIterations * numElements * sizeof(*h_dataIn))<< " "
+		<< 1e-9 * optkernelTimer.getBandwidth((double) nIterations * numElements * sizeof(*h_dataIn)) << "\n";
 		
 	fin.close();
 	fout.close();

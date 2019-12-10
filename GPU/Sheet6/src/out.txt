@@ -1,0 +1,325 @@
+***
+*** Starting ...
+***
+Launch Kernel with 1024 threads,4 blocks,4.096000 kB of shared memory per block
+CPU_Result: 4096.000000
+GPU_Result: 4096.000000
+optGPU_Result: 4096.000000
+***
+*** Results:
+***    Num Elements: 4096
+***    Iterations: 100000
+***    Time to Copy to Device: 0.05685 ms
+***    Copy Bandwidth: 0.288197 GB/s
+***    Time to Copy from Device: 0.026819 ms
+***    Copy Bandwidth: 0.000149148 GB/s
+***    Time for Reduction: 3036.67 ms
+***    GPU Reduction Bandwidth: 0.539538 GB/s
+***    optGPU Reduction Bandwidth: 0.720085 GB/s
+***
+CPU:
+*** Results:
+***    Num Elements: 4096
+***    Time for Reduction: 323.549 ms
+***    CPU Reduction Bandwidth: 5.06383 GB/s
+***
+***
+*** Starting ...
+***
+Launch Kernel with 1024 threads,16 blocks,4.096000 kB of shared memory per block
+CPU_Result: 16384.000000
+GPU_Result: 16384.000000
+optGPU_Result: 16384.000000
+***
+*** Results:
+***    Num Elements: 16384
+***    Iterations: 100000
+***    Time to Copy to Device: 0.079619 ms
+***    Copy Bandwidth: 0.82312 GB/s
+***    Time to Copy from Device: 0.027029 ms
+***    Copy Bandwidth: 0.000147989 GB/s
+***    Time for Reduction: 3933.21 ms
+***    GPU Reduction Bandwidth: 1.66622 GB/s
+***    optGPU Reduction Bandwidth: 2.78127 GB/s
+***
+CPU:
+*** Results:
+***    Num Elements: 16384
+***    Time for Reduction: 1298.11 ms
+***    CPU Reduction Bandwidth: 5.04855 GB/s
+***
+***
+*** Starting ...
+***
+Launch Kernel with 1024 threads,64 blocks,4.096000 kB of shared memory per block
+CPU_Result: 65536.000000
+GPU_Result: 65536.000000
+optGPU_Result: 65536.000000
+***
+*** Results:
+***    Num Elements: 65536
+***    Iterations: 100000
+***    Time to Copy to Device: 0.182216 ms
+***    Copy Bandwidth: 1.43864 GB/s
+***    Time to Copy from Device: 0.027028 ms
+***    Copy Bandwidth: 0.000147995 GB/s
+***    Time for Reduction: 6815.06 ms
+***    GPU Reduction Bandwidth: 3.84654 GB/s
+***    optGPU Reduction Bandwidth: 9.88968 GB/s
+***
+CPU:
+*** Results:
+***    Num Elements: 65536
+***    Time for Reduction: 5197.76 ms
+***    CPU Reduction Bandwidth: 5.0434 GB/s
+***
+***
+*** Starting ...
+***
+Launch Kernel with 1024 threads,256 blocks,4.096000 kB of shared memory per block
+CPU_Result: 262144.000000
+GPU_Result: 262144.000000
+optGPU_Result: 262144.000000
+***
+*** Results:
+***    Num Elements: 262144
+***    Iterations: 100000
+***    Time to Copy to Device: 0.593371 ms
+***    Copy Bandwidth: 1.76715 GB/s
+***    Time to Copy from Device: 0.02619 ms
+***    Copy Bandwidth: 0.00015273 GB/s
+***    Time for Reduction: 19233.4 ms
+***    GPU Reduction Bandwidth: 5.45185 GB/s
+***    optGPU Reduction Bandwidth: 26.1595 GB/s
+***
+CPU:
+*** Results:
+***    Num Elements: 262144
+***    Time for Reduction: 20791.5 ms
+***    CPU Reduction Bandwidth: 5.0433 GB/s
+***
+***
+*** Starting ...
+***
+Launch Kernel with 1024 threads,1024 blocks,4.096000 kB of shared memory per block
+CPU_Result: 1048576.000000
+GPU_Result: 1048576.000000
+optGPU_Result: 1048576.000000
+***
+*** Results:
+***    Num Elements: 1048576
+***    Iterations: 100000
+***    Time to Copy to Device: 1.66271 ms
+***    Copy Bandwidth: 2.52257 GB/s
+***    Time to Copy from Device: 0.025981 ms
+***    Copy Bandwidth: 0.000153959 GB/s
+***    Time for Reduction: 69473 ms
+***    GPU Reduction Bandwidth: 6.03732 GB/s
+***    optGPU Reduction Bandwidth: 40.0424 GB/s
+***
+CPU:
+*** Results:
+***    Num Elements: 1048576
+***    Time for Reduction: 83237.5 ms
+***    CPU Reduction Bandwidth: 5.03896 GB/s
+***
+***
+*** Starting ...
+***
+Launch Kernel with 8 threads,1024 blocks,0.032000 kB of shared memory per block
+CPU_Result: 8192.000000
+GPU_Result: 8192.000000
+optGPU_Result: 8192.000000
+***
+*** Results:
+***    Num Elements: 8192
+***    Iterations: 100000
+***    Time to Copy to Device: 0.048679 ms
+***    Copy Bandwidth: 0.673144 GB/s
+***    Time to Copy from Device: 0.025981 ms
+***    Copy Bandwidth: 0.000153959 GB/s
+***    Time for Reduction: 3666.31 ms
+***    GPU Reduction Bandwidth: 0.893761 GB/s
+***    optGPU Reduction Bandwidth: 1.15577 GB/s
+***
+CPU:
+*** Results:
+***    Num Elements: 8192
+***    Time for Reduction: 648.53 ms
+***    CPU Reduction Bandwidth: 5.05266 GB/s
+***
+***
+*** Starting ...
+***
+Launch Kernel with 16 threads,512 blocks,0.064000 kB of shared memory per block
+CPU_Result: 8192.000000
+GPU_Result: 8192.000000
+optGPU_Result: 8192.000000
+***
+*** Results:
+***    Num Elements: 8192
+***    Iterations: 100000
+***    Time to Copy to Device: 0.063625 ms
+***    Copy Bandwidth: 0.515018 GB/s
+***    Time to Copy from Device: 0.027308 ms
+***    Copy Bandwidth: 0.000146477 GB/s
+***    Time for Reduction: 2798.47 ms
+***    GPU Reduction Bandwidth: 1.17093 GB/s
+***    optGPU Reduction Bandwidth: 1.37982 GB/s
+***
+CPU:
+*** Results:
+***    Num Elements: 8192
+***    Time for Reduction: 648.512 ms
+***    CPU Reduction Bandwidth: 5.0528 GB/s
+***
+***
+*** Starting ...
+***
+Launch Kernel with 32 threads,256 blocks,0.128000 kB of shared memory per block
+CPU_Result: 8192.000000
+GPU_Result: 8192.000000
+optGPU_Result: 8192.000000
+***
+*** Results:
+***    Num Elements: 8192
+***    Iterations: 100000
+***    Time to Copy to Device: 0.063276 ms
+***    Copy Bandwidth: 0.517858 GB/s
+***    Time to Copy from Device: 0.02654 ms
+***    Copy Bandwidth: 0.000150716 GB/s
+***    Time for Reduction: 2416.67 ms
+***    GPU Reduction Bandwidth: 1.35591 GB/s
+***    optGPU Reduction Bandwidth: 1.62869 GB/s
+***
+CPU:
+*** Results:
+***    Num Elements: 8192
+***    Time for Reduction: 648.585 ms
+***    CPU Reduction Bandwidth: 5.05223 GB/s
+***
+***
+*** Starting ...
+***
+Launch Kernel with 64 threads,128 blocks,0.256000 kB of shared memory per block
+CPU_Result: 8192.000000
+GPU_Result: 8192.000000
+optGPU_Result: 8192.000000
+***
+*** Results:
+***    Num Elements: 8192
+***    Iterations: 100000
+***    Time to Copy to Device: 0.059645 ms
+***    Copy Bandwidth: 0.549384 GB/s
+***    Time to Copy from Device: 0.02626 ms
+***    Copy Bandwidth: 0.000152323 GB/s
+***    Time for Reduction: 2222.24 ms
+***    GPU Reduction Bandwidth: 1.47455 GB/s
+***    optGPU Reduction Bandwidth: 1.79217 GB/s
+***
+CPU:
+*** Results:
+***    Num Elements: 8192
+***    Time for Reduction: 648.542 ms
+***    CPU Reduction Bandwidth: 5.05256 GB/s
+***
+***
+*** Starting ...
+***
+Launch Kernel with 128 threads,64 blocks,0.512000 kB of shared memory per block
+CPU_Result: 8192.000000
+GPU_Result: 8192.000000
+optGPU_Result: 8192.000000
+***
+*** Results:
+***    Num Elements: 8192
+***    Iterations: 100000
+***    Time to Copy to Device: 0.064324 ms
+***    Copy Bandwidth: 0.509421 GB/s
+***    Time to Copy from Device: 0.027099 ms
+***    Copy Bandwidth: 0.000147607 GB/s
+***    Time for Reduction: 2432.96 ms
+***    GPU Reduction Bandwidth: 1.34683 GB/s
+***    optGPU Reduction Bandwidth: 1.55243 GB/s
+***
+CPU:
+*** Results:
+***    Num Elements: 8192
+***    Time for Reduction: 648.598 ms
+***    CPU Reduction Bandwidth: 5.05213 GB/s
+***
+***
+*** Starting ...
+***
+Launch Kernel with 256 threads,32 blocks,1.024000 kB of shared memory per block
+CPU_Result: 8192.000000
+GPU_Result: 8192.000000
+optGPU_Result: 8192.000000
+***
+*** Results:
+***    Num Elements: 8192
+***    Iterations: 100000
+***    Time to Copy to Device: 0.062857 ms
+***    Copy Bandwidth: 0.52131 GB/s
+***    Time to Copy from Device: 0.026819 ms
+***    Copy Bandwidth: 0.000149148 GB/s
+***    Time for Reduction: 2639.14 ms
+***    GPU Reduction Bandwidth: 1.24162 GB/s
+***    optGPU Reduction Bandwidth: 1.50174 GB/s
+***
+CPU:
+*** Results:
+***    Num Elements: 8192
+***    Time for Reduction: 648.521 ms
+***    CPU Reduction Bandwidth: 5.05273 GB/s
+***
+***
+*** Starting ...
+***
+Launch Kernel with 512 threads,16 blocks,2.048000 kB of shared memory per block
+CPU_Result: 8192.000000
+GPU_Result: 8192.000000
+optGPU_Result: 8192.000000
+***
+*** Results:
+***    Num Elements: 8192
+***    Iterations: 100000
+***    Time to Copy to Device: 0.04414 ms
+***    Copy Bandwidth: 0.742365 GB/s
+***    Time to Copy from Device: 0.026191 ms
+***    Copy Bandwidth: 0.000152724 GB/s
+***    Time for Reduction: 2904.1 ms
+***    GPU Reduction Bandwidth: 1.12833 GB/s
+***    optGPU Reduction Bandwidth: 1.45964 GB/s
+***
+CPU:
+*** Results:
+***    Num Elements: 8192
+***    Time for Reduction: 648.548 ms
+***    CPU Reduction Bandwidth: 5.05251 GB/s
+***
+***
+*** Starting ...
+***
+Launch Kernel with 1024 threads,8 blocks,4.096000 kB of shared memory per block
+CPU_Result: 8192.000000
+GPU_Result: 8192.000000
+optGPU_Result: 8192.000000
+***
+*** Results:
+***    Num Elements: 8192
+***    Iterations: 100000
+***    Time to Copy to Device: 0.042533 ms
+***    Copy Bandwidth: 0.770414 GB/s
+***    Time to Copy from Device: 0.027169 ms
+***    Copy Bandwidth: 0.000147227 GB/s
+***    Time for Reduction: 3015.93 ms
+***    GPU Reduction Bandwidth: 1.0865 GB/s
+***    optGPU Reduction Bandwidth: 1.47792 GB/s
+***
+CPU:
+*** Results:
+***    Num Elements: 8192
+***    Time for Reduction: 648.567 ms
+***    CPU Reduction Bandwidth: 5.05237 GB/s
+***
