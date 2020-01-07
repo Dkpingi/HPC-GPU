@@ -26,6 +26,7 @@ const static int DEFAULT_BLOCK_DIM      =  128;
 
 const static float TIMESTEP =      1e-6; // s
 const static float GAMMA    = 6.673e-11; // (Nm^2)/(kg^2)
+const static float SFT2     = 	   1e-9;
 
 //
 // Structures
@@ -61,7 +62,10 @@ __device__ float
 getDistance(float4 a, float4 b)
 {
 	// TODO: Calculate distance of two particles
-	return norm3df(a.x - b.x,a.y - b.y,a.z - b.z);
+	float dx = a.x - b.x;
+	float dy = a.y - b.y;
+	float dz = a.z - b.z;
+	return sqrtf(dx*dx + dy*dy + dz*dz + SFT2);
 }
 
 //
@@ -92,7 +96,7 @@ bodyBodyInteraction_opt(float4 bodyA, float4 bodyB, float3& accel)
 	float dx = (bodyB.x - bodyA.x);
 	float dy = (bodyB.y - bodyA.y);
 	float dz = (bodyB.z - bodyA.z);
-	float InvDistance = rsqrtf(dx*dx + dy*dy + dz*dz);
+	float InvDistance = rsqrtf(dx*dx + dy*dy + dz*dz + SFT2);
 	float CinvDistanceCubed = bodyB.w*(InvDistance*InvDistance*InvDistance);
 	accel.x += dx*CinvDistanceCubed;
 	accel.y += dy*CinvDistanceCubed;
@@ -150,6 +154,17 @@ simpleNbody_Kernel(int numElements, float4* bodyPos, float3* bodySpeed)
 	}
 }
 
+/**
+Optimizations:  -reusing calculations of dx,dy,dz in distance calculation
+		-using rsqrtf function
+		-not using forces but accelerations because the mass of the accelerated body cancels anyway
+		-used tiling as instructed
+		-loop unrolling (benefit was moderate for outer loop (maybe 1G), relatively large for inner loop ( a few G).
+		-only check for i != j in the inner loop if we are in the right block
+		-multiply GAMMA to the mass when loading into shared memory, because they are always together anyway
+		-enabled ftz for denormalized numbers, because they don't happen due to softening (for both opt and unopt)
+		
+**/
 __global__ void
 sharedNbody_Kernel(const int numElements, const float4* bodyPos, float3* bodySpeed)
 {
